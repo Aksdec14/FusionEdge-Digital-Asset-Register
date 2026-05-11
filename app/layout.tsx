@@ -47,7 +47,7 @@ export const metadata: Metadata = {
       "A single, living record of every asset across every site. Always updated. Always accessible. Always audit-ready. Built for facility managers who cannot afford to miss a thing.",
     images: [
       {
-        url: "/og-digital-asset-register.png",
+        url: "/FusionEdge_logo.png",
         width: 1200,
         height: 630,
         alt: "FusionEdge Digital Asset Register Platform",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     title: "FusionEdge Digital Asset Register | Know Every Asset. Always.",
     description:
       "Stop managing assets on spreadsheets. FusionEdge gives you complete asset visibility across every site — audit-ready, always.",
-    images: ["/og-digital-asset-register.png"],
+    images: ["/FusionEdge_logo.png"],
     creator: "@fusionedge",
   },
   robots: {
@@ -74,11 +74,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/fe_logo.png", type: "image/svg+xml" },
-      { url: "/fe_logo.png", sizes: "32x32", type: "image/png" },
+      { url: "/FusionEdge_logo.png", type: "image/svg+xml" },
+      { url: "/FusionEdge_logo.png", sizes: "32x32", type: "image/png" },
     ],
-    apple: "/fe_logo.png",
-    shortcut: "/fe_logo.png",
+    apple: "/FusionEdge_logo.png",
+    shortcut: "/FusionEdge_logo.png",
   },
 };
 
