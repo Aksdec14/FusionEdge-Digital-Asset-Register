@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
@@ -14,13 +14,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// 1. Modern Viewport Export (Next.js 14/15 Standard)
+export const viewport: Viewport = {
+  themeColor: "#EFE9E3",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://fusionedge.io"),
+
   title: {
     default: "FusionEdge Digital Asset Register | Know Every Asset. Always.",
     template: "%s | FusionEdge",
   },
+
   description:
     "FusionEdge Digital Asset Register gives you a single, living record of every asset across every site. Always updated. Always accessible. Always audit-ready.",
+
   keywords: [
     "digital asset register",
     "facility asset management",
@@ -28,15 +40,16 @@ export const metadata: Metadata = {
     "QR code asset tagging",
     "multi-site asset management",
     "facility management platform",
-    "asset audit ready",
     "FusionEdge",
   ],
+
   authors: [{ name: "FusionEdge", url: "https://fusionedge.io" }],
   creator: "FusionEdge",
-  metadataBase: new URL("https://fusionedge.io"),
+
   alternates: {
     canonical: "/digital-asset-register",
   },
+
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -44,7 +57,7 @@ export const metadata: Metadata = {
     siteName: "FusionEdge",
     title: "FusionEdge Digital Asset Register | Know Every Asset. Always.",
     description:
-      "A single, living record of every asset across every site. Always updated. Always accessible. Always audit-ready. Built for facility managers who cannot afford to miss a thing.",
+      "A single, living record of every asset across every site. Built for facility managers who cannot afford to miss a thing.",
     images: [
       {
         url: "/FusionEdge_logo.png",
@@ -54,14 +67,25 @@ export const metadata: Metadata = {
       },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
     title: "FusionEdge Digital Asset Register | Know Every Asset. Always.",
-    description:
-      "Stop managing assets on spreadsheets. FusionEdge gives you complete asset visibility across every site — audit-ready, always.",
+    description: "Stop managing assets on spreadsheets. FusionEdge gives you complete asset visibility across every site.",
     images: ["/FusionEdge_logo.png"],
     creator: "@fusionedge",
   },
+
+  // 2. Metadata-driven Icons (Unified and Cleaned)
+  icons: {
+    icon: [
+      { url: "/fe_logo.png" }, // Favicon
+      { url: "/fe_logo.png", type: "image/svg+xml" }, // SVG version
+    ],
+    apple: "/fe_logo.png",
+    shortcut: "/fe_logo.png",
+  },
+
   robots: {
     index: true,
     follow: true,
@@ -72,14 +96,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: [
-      { url: "/FusionEdge_logo.png", type: "image/svg+xml" },
-      { url: "/FusionEdge_logo.png", sizes: "32x32", type: "image/png" },
-    ],
-    apple: "/FusionEdge_logo.png",
-    shortcut: "/FusionEdge_logo.png",
-  },
 };
 
 export default function RootLayout({
@@ -87,49 +103,54 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 3. Structured Data (Graph format for better SEO connectivity)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://fusionedge.io/digital-asset-register/#software",
+        "name": "FusionEdge Digital Asset Register",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "A single, living record of every facility asset across every site with QR code tagging and document management.",
+        "url": "https://fusionedge.io/digital-asset-register",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://fusionedge.io/digital-asset-register",
+          "priceCurrency": "USD",
+        },
+        "provider": {
+          "@type": "Organization",
+          "name": "FusionEdge",
+          "url": "https://fusionedge.io",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "areaServed": ["IN", "SG"],
+          },
+        },
+      }
+    ]
+  };
+
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <head>
-        <link
-          rel="icon"
-          type="image/svg+xml"
-          href="/fe_logo.png"
-        />
+        {/* Manual head link removed; metadata icons handle it now. */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              name: "FusionEdge Digital Asset Register",
-              applicationCategory: "BusinessApplication",
-              operatingSystem: "Web",
-              description:
-                "A single, living record of every facility asset across every site. QR code tagging, document management, and multi-site portfolio management — built for facility managers.",
-              offers: {
-                "@type": "Offer",
-                url: "https://fusionedge.io/digital-asset-register",
-              },
-              provider: {
-                "@type": "Organization",
-                name: "FusionEdge",
-                url: "https://fusionedge.io",
-                contactPoint: {
-                  "@type": "ContactPoint",
-                  contactType: "sales",
-                  areaServed: ["IN", "SG"],
-                },
-              },
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-screen bg-[#EFE9E3] text-[#1e2a38] flex flex-col overflow-x-hidden">
         <Navbar />
-        {children}
+        <main className="flex-1">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>
