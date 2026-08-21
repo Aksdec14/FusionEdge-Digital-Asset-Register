@@ -11,11 +11,51 @@ import {
 } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 
+const ACCESS_KEY = "3f951b76-ae31-4fcf-9b95-c6c507352a96";
 const SUBJECTS = ["General Inquiry", "Technical Support", "Website Feedback"];
+
+type FormStatus = "idle" | "sending" | "success" | "error";
 
 export default function ContactSection() {
     const [message, setMessage] = useState("");
     const [subject, setSubject] = useState(SUBJECTS[0]);
+    const [status, setStatus] = useState<FormStatus>("idle");
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setStatus("sending");
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const payload = {
+            access_key: ACCESS_KEY,
+            subject: subject,
+            ...Object.fromEntries(formData.entries()),
+        };
+
+        try {
+            const res = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                setStatus("success");
+                setMessage("");
+                setSubject(SUBJECTS[0]);
+                form.reset();
+            } else {
+                setStatus("error");
+            }
+        } catch {
+            setStatus("error");
+        }
+    }
 
     return (
         <section
@@ -39,7 +79,7 @@ export default function ContactSection() {
                         </h2>
 
                         <p className="mt-4 text-sm leading-7 text-white/80">
-                            Have some big idea or brand to develop and need help? We'd
+                            Have some big idea or brand to develop and need help? We&apos;d
                             love to hear from you.
                         </p>
 
@@ -87,7 +127,7 @@ export default function ContactSection() {
                     </div>
 
                     {/* ── RIGHT PANEL ── */}
-                    <form className="p-10 xl:p-12">
+                    <form onSubmit={handleSubmit} className="p-10 xl:p-12">
                         <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2">
                             {[
                                 { name: "firstName", type: "text", placeholder: "First Name" },
@@ -100,6 +140,7 @@ export default function ContactSection() {
                                     type={type}
                                     name={name}
                                     placeholder={placeholder}
+                                    required
                                     className="w-full border-0 border-b border-gray-300 bg-transparent py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#5B1A8B] transition-colors"
                                 />
                             ))}
@@ -114,6 +155,7 @@ export default function ContactSection() {
                                     setMessage(e.target.value.slice(0, 500))
                                 }
                                 rows={4}
+                                required
                                 placeholder="Write Message"
                                 className="w-full resize-none border-0 border-b border-gray-300 bg-transparent py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#5B1A8B] transition-colors"
                             />
@@ -137,6 +179,7 @@ export default function ContactSection() {
                                             type="radio"
                                             name="subject"
                                             value={s}
+                                            required
                                             checked={subject === s}
                                             onChange={() => setSubject(s)}
                                             className="accent-[#5B1A8B] h-4 w-4"
@@ -149,11 +192,23 @@ export default function ContactSection() {
 
                         <button
                             type="submit"
-                            className="mt-8 flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#5B1A8B] to-[#1DBDA0] px-6 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:scale-105 active:scale-[0.98]"
+                            disabled={status === "sending"}
+                            className="mt-8 flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#5B1A8B] to-[#1DBDA0] px-6 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:scale-105 active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100 disabled:cursor-not-allowed"
                         >
                             <FiSend className="h-4 w-4" />
-                            Send Message
+                            {status === "sending" ? "Sending..." : "Send Message"}
                         </button>
+
+                        {status === "success" && (
+                            <p className="mt-4 text-sm font-medium text-[#1DBDA0]">
+                                Message sent successfully! We&apos;ll get back to you soon.
+                            </p>
+                        )}
+                        {status === "error" && (
+                            <p className="mt-4 text-sm font-medium text-red-500">
+                                Something went wrong. Please try again.
+                            </p>
+                        )}
                     </form>
                 </div>
             </div >
